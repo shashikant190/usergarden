@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Logs Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .dashboard-container { max-width: 1200px; margin: 0 auto; }
+        .chart-container { margin-bottom: 40px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>GardenCraft - User Activity Dashboard</h1>
+        
+        <div class="chart-container">
+            <canvas id="logChart"></canvas>
+        </div>
+
+        <h2>Daily User Counts</h2>
+        <table id="logTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>User Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
