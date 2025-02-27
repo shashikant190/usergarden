@@ -6,6 +6,13 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://gardencraft-game.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 const port = process.env.PORT || 3000;  // This works locally, ignored on Vercel
 
 app.use(cors());
