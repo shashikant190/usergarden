@@ -1,106 +1,80 @@
 const { MongoClient } = require('mongodb');
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 
-// Use dynamic port for Vercel, fallback to 3000 for local
 const port = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI;
 
-// Middleware setup
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));  // Serve static files first
+app.use(express.static('public'));
 
-// File paths and initial setup
-const logFilePath = path.join(__dirname, 'userLogs.txt');
-let currentDate = new Date().toISOString().split('T')[0];
-let userCount = 0;
+let db;
 
-// Initialize log file (optional if using MongoDB - can be removed later)
-function initializeLogs() {
-    if (!fs.existsSync(logFilePath)) {
-        fs.writeFileSync(logFilePath, 'Date,UserCount\n');
-    } else {
-        const data = fs.readFileSync(logFilePath, 'utf8');
-        const entries = data.trim().split('\n');
-        const lastEntry = entries[entries.length - 1];
-
-        if (lastEntry) {
-            const [lastDate, lastCount] = lastEntry.split(',');
-            if (lastDate === currentDate) {
-                userCount = parseInt(lastCount, 10) || 0;
-            }
-        }
-    }
+async function connectDB() {
+  const client = new MongoClient(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  
+  try {
+    await client.connect();
+    db = client.db('gardenGame');
+    console.log('✅ Connected to MongoDB Atlas');
+    await db.collection('userCounts').createIndex({ date: 1 }, { unique: true });
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error);
+    process.exit(1);
+  }
 }
 
-// Update log file (optional - you can migrate this logic to MongoDB later)
-function updateLogFile() {
-    const data = fs.readFileSync(logFilePath, 'utf8');
-    const entries = data.trim().split('\n');
+connectDB();
 
-    const filtered = entries.filter(entry => {
-        const [date] = entry.split(',');
-        return date !== currentDate;
-    });
+// Daily count management
+app.post('/increment', async (req, res) => {
+  try {
+    const date = new Date().toISOString().split('T')[0];
+    const collection = db.collection('userCounts');
+    
+    const result = await collection.findOneAndUpdate(
+      { date },
+      { $inc: { count: 1 } },
+      { 
+        upsert: true,
+        returnDocument: 'after',
+        projection: { _id: 0, date: 1, count: 1 }
+      }
+    );
 
-    filtered.push(`${currentDate},${userCount}`);
-    fs.writeFileSync(logFilePath, filtered.join('\n') + '\n');
-}
-
-// Daily reset check
-setInterval(() => {
-    const today = new Date().toISOString().split('T')[0];
-    if (today !== currentDate) {
-        currentDate = today;
-        userCount = 0;
-        updateLogFile();
-        console.log(`Date changed to ${currentDate}, reset count to 0`);
-    }
-}, 60000);
-
-// Routes
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'gardencraft-dashboard.html'));
+    res.json(result.value);
+  } catch (error) {
+    console.error('Error updating count:', error);
+    res.status(500).json({ error: 'Database operation failed' });
+  }
 });
 
-app.get('/logs', (req, res) => {
-    fs.readFile(logFilePath, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading log file:', err);
-            return res.status(500).json({ error: 'Error reading log file' });
-        }
-
-        try {
-            const logs = data.trim().split('\n').slice(1)
-                .filter(line => line.trim())
-                .map(line => {
-                    const [date, count] = line.split(',');
-                    return {
-                        date: date || 'Unknown',
-                        count: parseInt(count, 10) || 0
-                    };
-                });
-            res.json(logs);
-        } catch (parseError) {
-            console.error('Error parsing logs:', parseError);
-            res.status(500).json({ error: 'Error parsing log data' });
-        }
-    });
+// Get logs endpoint
+app.get('/logs', async (req, res) => {
+  try {
+    const collection = db.collection('userCounts');
+    const logs = await collection.find(
+      {},
+      { projection: { _id: 0, date: 1, count: 1 } }
+    ).sort({ date: 1 }).toArray();
+    
+    res.json(logs);
+  } catch (error) {
+    console.error('Error fetching logs:', error);
+    res.status(500).json({ error: 'Failed to retrieve logs' });
+  }
 });
 
-app.post('/increment', (req, res) => {
-    userCount++;
-    updateLogFile();
-    res.json({ date: currentDate, count: userCount });
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'gardencraft-dashboard.html'));
 });
 
-// Initialize logs (optional if moving fully to MongoDB)
-initializeLogs();
-
-// Start server
 app.listen(port, () => {
-    console.log(`✅ Server running...`);
+  console.log(`🚀 Server running on port ${port}`);
 });
