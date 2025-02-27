@@ -21,7 +21,7 @@ async function connectDB() {
   
   try {
     await client.connect();
-    db = client.db('gardenGame');
+    db = client.db('gardengame');
     console.log('✅ Connected to MongoDB Atlas');
     await db.collection('userCounts').createIndex({ date: 1 }, { unique: true });
   } catch (error) {
