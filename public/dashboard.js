@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
     async function fetchAndUpdateLogs() {
       try {
-        const response = await fetch('http://localhost:3000/logs');
+        const response = await fetch('https://usergarden.vercel.app/logs');
         const logs = await response.json();
         
         updateTable(logs);
