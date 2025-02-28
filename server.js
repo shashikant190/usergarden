@@ -101,5 +101,5 @@ app.post('/increment', (req, res) => {
 // Initialize and start server
 initializeLogs();
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on https://usergarden.vercel.app/`);
 });
