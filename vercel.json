@@ -1,6 +1,8 @@
 {
-    "routes": [
-      { "src": "/api/.*", "dest": "/api/index.js" },
-      { "src": "/(.*)", "dest": "/public/$1" }
-    ]
-  }
+  "version": 2,
+  "builds": [{ "src": "server.js", "use": "@vercel/node" }],
+  "routes": [
+    { "src": "/increment", "dest": "/server.js", "methods": ["POST"] },
+    { "src": "/logs", "dest": "/server.js", "methods": ["GET"] }
+  ]
+}
