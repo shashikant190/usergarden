@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Game Analytics Dashboard</title>
     <style>
         * {
@@ -124,6 +125,20 @@
             margin: 0 auto;
             font-size: 0.9rem;
         } */
+
+        @media (max-width: 480px) {
+            .nav-title {
+                font-size: 0.9rem;
+            }
+
+            .logo {
+                height: 35px;
+            }
+
+            .game-image {
+                height: 100px;
+            }
+        }
     </style>
 </head>
 <body>
