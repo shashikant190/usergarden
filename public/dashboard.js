@@ -82,7 +82,7 @@ async function fetchAndUpdateLogs() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `user_logs_${new Date().toISOString().split('T')[0]}.csv`;
+      a.download = 'gardencraftUserLogs.csv';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
