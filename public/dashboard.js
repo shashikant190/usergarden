@@ -63,6 +63,31 @@ async function fetchAndUpdateLogs() {
         }
       });
     }
+
+    // Add download handler INSIDE the main callback
+    document.getElementById('downloadButton').addEventListener('click', () => {
+      if (!currentLogs.length) {
+          alert('No data available to download');
+          return;
+      }
+
+      // Create CSV content
+      const csv = [
+          ['Date', 'User Count'].join(','),
+          ...currentLogs.map(log => [log.date, log.count].join(','))
+      ].join('\n');
+
+      // Create download link
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `user_logs_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+  });
   
     // Refresh data every 5 minutes
     fetchAndUpdateLogs();
@@ -70,26 +95,4 @@ async function fetchAndUpdateLogs() {
   });
 
 
-  document.getElementById('downloadButton').addEventListener('click', () => {
-    if (!currentLogs.length) {
-      alert('No data available to download');
-      return;
-    }
   
-    // Create CSV content
-    const csv = [
-      ['Date', 'User Count'].join(','),
-      ...currentLogs.map(log => [log.date, log.count].join(','))
-    ].join('\n');
-  
-    // Create download link
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `user_logs_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  });
