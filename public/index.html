@@ -17,6 +17,33 @@
             padding: 2rem;
         }
 
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border-radius: 10px;
+        }
+
+        .logo {
+            height: 75px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-title {
+            color: #1a73e8;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -80,11 +107,39 @@
         .view-stats:hover {
             background: #1557b0;
         }
+
+        /* Add footer styles */
+        /* footer {
+            background: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: #1a73e8;
+            margin-top: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            font-size: 0.9rem;
+        } */
     </style>
 </head>
 <body>
+        <!-- Navbar -->
+        <nav class="navbar">
+            <a href="https://rrbcea.org/" target="_blank">
+                <img src="game-images/rrbcea-logo.png" alt="RRBCEA Logo" class="logo">
+            </a>
+            <h1 class="nav-title">Game Analytics Dashboards</h1>
+            <a href="https://www.jyotirgamay.com/" target="_blank">
+                <img src="game-images/jbe-logo.png" alt="JBE Logo" class="logo">
+            </a>
+        </nav>
+
     <div class="container">
-        <h1>Game Analytics Dashboards</h1>
+      
         
         <div class="games-grid">
             <!-- Habitat Matcher Card -->
@@ -107,7 +162,7 @@
 
             <!-- GardenCraft Card -->
             <a href="https://usergarden.vercel.app/gardencraft-dashboard.html" class="game-card">
-                <img src="/game-images/GardenCraft.png" alt="GardenCraft" class="game-image">
+                <img src="game-images/GardenCraft.png" alt="GardenCraft" class="game-image">
                 <div class="game-content">
                     <h2 class="game-title">GardenCraft</h2>
                     <div class="view-stats">View Analytics</div>
@@ -115,5 +170,11 @@
             </a>
         </div>
     </div>
+    <!-- Footer -->
+    <!-- <footer>
+        <div class="footer-content">
+            © 2025 RRBCEA. All rights reserved.
+        </div>
+    </footer> -->
 </body>
 </html>
